@@ -57,8 +57,8 @@ const account = async (acc) => {
   await page.click("button._a9_1");
   await delay(5000);
   await page.screenshot({ path: "screenshot.png" });
-  await page.type("input[name='username']", "eiv96310");
-  await page.type("input[name='password']", "1Petr2Petr");
+  await page.type("input[name='username']", "");
+  await page.type("input[name='password']", "");
   await page.keyboard.press("Enter");
   await delay(10000);
 
