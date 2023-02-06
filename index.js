@@ -97,7 +97,7 @@ const downloadArray = async (urls, tag) => {
   const start = lastImageurl ? urls.indexOf(lastImageurl) + 1 : 0;
   for (let i = start; i < urls.length; i++) {
     const url = urls[i];
-    const path = "images/" + tag + lastName + ".jpg";
+    const path = "images/" + lastName + ".jpg";
     lastName++;
     console.log("Downloading image " + lastName);
     await delay(12 * Math.random() * 10);
@@ -113,4 +113,4 @@ const download = (url, path) => {
     response.pipe(file);
   });
 };
-account("henta.world");
+tag("friday");
