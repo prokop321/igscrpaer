@@ -5,7 +5,7 @@ const https = require("https");
 
 let lastImageurl = "";
 
-let lastName = 0;
+let lastName = 1000;
 
 const tag = async (tag) => {
   const browser = await puppeteer.launch();
@@ -89,6 +89,47 @@ const account = async (acc) => {
   }
 };
 
+const place = async (place) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  console.log("Opening instagram");
+  await page.goto("https://www.instagram.com/accounts/login/");
+  await delay(1000);
+  await page.click("button._a9_1");
+  await delay(5000);
+  await page.screenshot({ path: "screenshot.png" });
+  await page.type("input[name='username']", "eiv96310");
+  await page.type("input[name='password']", "1Petr2Petr");
+  await page.keyboard.press("Enter");
+  await delay(10000);
+
+  await page.goto("https://www.instagram.com/explore/locations/" + place + "/");
+  await page.waitForSelector("article");
+  await page.screenshot({ path: "screenshot.png" });
+
+  await page.screenshot({ path: "screenshot.png" });
+  await page.waitForSelector("article");
+  await delay(1000 + Math.random() * 5 * 1000);
+  while (true) {
+    await page.screenshot({ path: "screenshot.png" });
+    console.log("Downloading images");
+    images = await page.evaluate(() => {
+      const images = Array.from(document.querySelectorAll("article img"));
+      return images.map((img) => img.src);
+    });
+    if (Math.random() > 0.5) {
+      await delay(1000 + Math.random() * 5 * 1000);
+    }
+    await downloadArray(images, place);
+    //scroll down
+    await page.evaluate(() => {
+      window.scrollBy(0, window.innerHeight * 1.2 * Math.random());
+    });
+    await delay(2000 + Math.random() * 5 * 1000);
+    await page.screenshot({ path: "screenshot.png" });
+  }
+};
+
 const delay = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
@@ -113,4 +154,17 @@ const download = (url, path) => {
     response.pipe(file);
   });
 };
-tag("friday");
+
+const rename = () => {
+  //take image by image from images folder, rename it and put it into renamed folder
+  fs.readdir("images", (err, files) => {
+    files.forEach((file, index) => {
+      const name = index + lastName;
+      fs.rename("images/" + file, "renamed/" + name + ".jpg", (err) => {
+        if (err) throw err;
+      });
+    });
+  });
+};
+
+rename();
